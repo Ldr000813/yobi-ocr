@@ -27,30 +27,36 @@ export default function Home() {
     setTimeout(() => setStatusMessage(null), 5000);
   };
 
-  const processImage = async () => {
-    if (!selectedFile) return showStatus('画像を選択してください', true);
+const processImage = async () => {
+  if (!selectedFile) return showStatus('画像を選択してください', true);
 
-    setLoading(true);
-    setResult(null);
+  setLoading(true);
+  setResult(null);
 
-    try {
-      const formData = new FormData();
-      formData.append('file', selectedFile);
+  try {
+    const formData = new FormData();
+    formData.append('file', selectedFile);
 
-      const res = await fetch('/api/ocr', { method: 'POST', body: formData });
-      const data = await res.json();
+    const res = await fetch('/api/ocr', { method: 'POST', body: formData });
 
-      if (data.error) return showStatus(data.error, true);
+    // ↓ ここを追加してレスポンスをログ出力
+    const text = await res.text(); 
+    console.log('Raw API Response:', text); // <- ここで生のレスポンスを確認
+    const data = JSON.parse(text);          // <- JSONに変換
+    console.log('Parsed API Response:', data); // <- ここで { text: "..." } を確認
 
-      setResult(data.text);
-      showStatus('OCR処理が完了しました', false);
-    } catch (err: any) {
-      console.error(err);
-      showStatus(err.message, true);
-    } finally {
-      setLoading(false);
-    }
-  };
+    if (data.error) return showStatus(data.error, true);
+
+    setResult(data.text);
+    showStatus('OCR処理が完了しました', false);
+  } catch (err: any) {
+    console.error(err);
+    showStatus(err.message, true);
+  } finally {
+    setLoading(false);
+  }
+};
+
 
   return (
     <div className="container">

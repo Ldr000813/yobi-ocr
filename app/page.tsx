@@ -39,7 +39,6 @@ export default function Home() {
 
       const res = await fetch('/api/ocr', { method: 'POST', body: formData });
 
-      // ログ出力で確認
       const text = await res.text();
       console.log('Raw API Response:', text);
       const data = JSON.parse(text);
@@ -64,6 +63,7 @@ export default function Home() {
         <p>Azure AI Document Intelligence を使用した文書認識サービス</p>
       </div>
 
+      {/* アップロードボタン */}
       <div className="upload-section" style={{ textAlign: 'center', marginBottom: 20 }}>
         <button className="btn btn-primary" onClick={triggerCamera} style={{ marginRight: 10 }}>
           📷 カメラで撮影
@@ -75,34 +75,12 @@ export default function Home() {
         <input type="file" id="fileInput" accept="image/*" onChange={handleImageSelect} style={{ display: 'none' }} />
       </div>
 
-      {/* プレビューと結果を横並びに */}
-      <div className="preview-result-container" style={{ display: 'flex', gap: 20, flexWrap: 'wrap' }}>
-        {/* プレビュー */}
-        {imagePreview && (
-          <div className="preview-section" style={{ flex: 1, minWidth: 300, maxHeight: 400, overflow: 'auto', textAlign: 'center' }}>
-            <img src={imagePreview} alt="Image Preview" style={{ maxWidth: '100%', borderRadius: 10 }} />
-          </div>
-        )}
-
-        {/* OCR結果 */}
-        {result && (
-          <div className="result-section" style={{
-            flex: 1,
-            minWidth: 300,
-            maxHeight: 400,
-            overflowY: 'auto',
-            padding: 20,
-            background: '#f8f9fa',
-            borderRadius: 10,
-            fontFamily: 'Courier New, monospace',
-            whiteSpace: 'pre-wrap',
-            wordBreak: 'break-word'
-          }}>
-            <h3 style={{ color: '#667eea', marginBottom: 15 }}>📋 OCR結果</h3>
-            {result || '(テキストが検出されませんでした)'}
-          </div>
-        )}
-      </div>
+      {/* プレビュー */}
+      {imagePreview && (
+        <div className="preview-section" style={{ textAlign: 'center', marginBottom: 20 }}>
+          <img src={imagePreview} alt="Image Preview" style={{ maxWidth: '100%', borderRadius: 10, maxHeight: 400 }} />
+        </div>
+      )}
 
       {/* OCR処理ボタン */}
       <div style={{ textAlign: 'center', margin: '20px 0' }}>
@@ -133,6 +111,24 @@ export default function Home() {
           marginTop: 15, padding: 12, borderRadius: 8, textAlign: 'center'
         }}>
           {statusMessage.message}
+        </div>
+      )}
+
+      {/* OCR結果 */}
+      {result && (
+        <div className="result-section" style={{
+          marginTop: 20,
+          padding: 20,
+          background: '#f8f9fa',
+          borderRadius: 10,
+          fontFamily: 'Courier New, monospace',
+          whiteSpace: 'pre-wrap',
+          wordBreak: 'break-word',
+          maxHeight: 400,
+          overflowY: 'auto'
+        }}>
+          <h3 style={{ color: '#667eea', marginBottom: 15 }}>📋 OCR結果</h3>
+          {result || '(テキストが検出されませんでした)'}
         </div>
       )}
 
